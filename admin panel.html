@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin</title>
+
+<style>
+:root{
+  --bg:#121212;
+  --panel:#1c1f24;
+  --card:#292e36;
+  --line:#414850;
+  --cyan:#00f0ff;
+  --red:#ff5c67;
+  --yellow:#ffd166;
+  --text:#f2f5f7;
+  --muted:#9299a3;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+.hidden{
+  display:none !important;
+}
+
+/* LOGIN */
+
+#loginScreen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px;
+}
+
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:5px;
+  padding:28px;
+}
+
+.login-card h1{
+  margin:0 0 7px;
+  font-size:27px;
+}
+
+.login-card p{
+  margin:0 0 24px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.field{
+  margin-bottom:12px;
+}
+
+.field input{
+  width:100%;
+  height:46px;
+  padding:0 13px;
+  background:#111318;
+  border:1px solid var(--line);
+  border-radius:4px;
+  color:var(--text);
+  outline:none;
+}
+
+.field input:focus{
+  border-color:var(--cyan);
+}
+
+.primary-btn{
+  width:100%;
+  height:46px;
+  border:0;
+  border-radius:4px;
+  background:var(--cyan);
+  color:#001316;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.primary-btn:disabled{
+  opacity:.6;
+}
+
+.error{
+  min-height:18px;
+  margin-top:11px;
+  color:#ff8088;
+  font-size:13px;
+}
+
+/* APP */
+
+#app{
+  min-height:100vh;
+  padding:24px;
+}
+
+.topbar{
+  width:100%;
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.brand h1{
+  margin:0;
+  font-size:28px;
+}
+
+.brand p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.account{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.account-name{
+  color:var(--cyan);
+  font-weight:700;
+}
+
+.logout-btn{
+  height:38px;
+  padding:0 13px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:var(--panel);
+  color:var(--text);
+  cursor:pointer;
+}
+
+/* MAIN */
+
+.layout{
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(320px, 34%) minmax(0, 66%);
+  gap:18px;
+  min-height:calc(100vh - 105px);
+}
+
+.card{
+  min-width:0;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:5px;
+  padding:22px;
+}
+
+.card h2{
+  margin:0;
+  font-size:20px;
+}
+
+.card-subtitle{
+  margin:6px 0 17px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* LOCK */
+
+.lock-box{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:18px;
+}
+
+.lock-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.lock-title{
+  font-size:15px;
+  font-weight:800;
+}
+
+.lock-state{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.switch{
+  position:relative;
+  width:58px;
+  height:30px;
+  flex:none;
+}
+
+.switch input{
+  opacity:0;
+  width:0;
+  height:0;
+}
+
+.slider{
+  position:absolute;
+  inset:0;
+  background:#383e46;
+  border-radius:4px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.slider:before{
+  content:"";
+  position:absolute;
+  left:4px;
+  top:4px;
+  width:22px;
+  height:22px;
+  background:#fff;
+  border-radius:3px;
+  transition:.2s;
+}
+
+.switch input:checked + .slider{
+  background:var(--cyan);
+}
+
+.switch input:checked + .slider:before{
+  transform:translateX(28px);
+}
+
+.info{
+  margin-top:16px;
+  padding:12px;
+  background:#171a1f;
+  border:1px solid #30353d;
+  border-radius:4px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+
+/* ALERTS */
+
+.alerts-card{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+
+.alerts-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.alert-count{
+  padding:6px 10px;
+  background:#2b171a;
+  border:1px solid #4b2327;
+  border-radius:4px;
+  color:#ff8189;
+  font-size:12px;
+  font-weight:800;
+}
+
+.alerts-list{
+  flex:1;
+  min-height:500px;
+  overflow-y:auto;
+  padding-right:4px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.alert-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-left:4px solid var(--red);
+  border-radius:4px;
+  padding:16px;
+}
+
+.alert-card.medium{
+  border-left-color:var(--yellow);
+}
+
+.alert-card.low{
+  border-left-color:var(--cyan);
+}
+
+.alert-card.high{
+  border-left-color:var(--red);
+}
+
+.alert-card.critical{
+  border-left-color:#ff304c;
+}
+
+.alert-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:9px;
+}
+
+.alert-type{
+  font-size:14px;
+  font-weight:800;
+}
+
+.severity{
+  padding:4px 8px;
+  background:#15181d;
+  border:1px solid var(--line);
+  border-radius:3px;
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+}
+
+.alert-users{
+  margin-bottom:10px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.alert-message{
+  margin-bottom:10px;
+  padding:12px;
+  background:#15181d;
+  border:1px solid #292e35;
+  border-radius:3px;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font-size:13px;
+}
+
+.alert-reason{
+  color:#c9ced3;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.alert-meta{
+  margin-top:10px;
+  color:#737b84;
+  font-size:10px;
+}
+
+.empty{
+  flex:1;
+  min-height:500px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:30px;
+  border:1px dashed var(--line);
+  border-radius:4px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.status{
+  position:fixed;
+  left:20px;
+  bottom:20px;
+  max-width:360px;
+  padding:11px 14px;
+  background:#171a1f;
+  border:1px solid var(--line);
+  border-radius:4px;
+  color:var(--muted);
+  font-size:12px;
+  box-shadow:0 12px 30px rgba(0,0,0,.35);
+}
+
+@media(max-width:900px){
+
+  #app{
+    padding:16px;
+  }
+
+  .layout{
+    grid-template-columns:1fr;
+    min-height:auto;
+  }
+
+  .alerts-list,
+  .empty{
+    min-height:400px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .account{
+    width:100%;
+    justify-content:space-between;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<section id="loginScreen">
+  <div class="login-card">
+
+    <h1>Panel Admin</h1>
+    <p>Administración central</p>
+
+    <div class="field">
+      <input
+        id="username"
+        type="text"
+        placeholder="Username"
+        autocomplete="username"
+      >
+    </div>
+
+    <div class="field">
+      <input
+        id="password"
+        type="password"
+        placeholder="Contraseña"
+        autocomplete="current-password"
+      >
+    </div>
+
+    <button id="loginBtn" class="primary-btn">
+      Entrar
+    </button>
+
+    <div id="loginError" class="error"></div>
+
+  </div>
+</section>
+
+
+<section id="app" class="hidden">
+
+  <div class="topbar">
+
+    <div class="brand">
+      <h1>Panel Admin</h1>
+      <p>Administración central</p>
+    </div>
+
+    <div class="account">
+      <span id="accountName" class="account-name"></span>
+      <button id="logoutBtn" class="logout-btn">
+        Log out
+      </button>
+    </div>
+
+  </div>
+
+
+  <div class="layout">
+
+    <!-- CONTROL -->
+    <div class="card">
+
+      <h2>Control del ecosistema</h2>
+
+      <div class="card-subtitle">
+        Bloqueo centralizado por ubicación
+      </div>
+
+      <div class="lock-box">
+
+        <div class="lock-header">
+
+          <div>
+            <div class="lock-title">
+              Bloquear servicios
+            </div>
+
+            <div id="lockState" class="lock-state">
+              Comprobando estado...
+            </div>
+          </div>
+
+          <label class="switch">
+            <input id="lockSwitch" type="checkbox">
+            <span class="slider"></span>
+          </label>
+
+        </div>
+
+        <div class="info">
+          El bloqueo se aplica dentro de un radio de
+          <b>100 metros</b> desde la ubicación utilizada
+          al activarlo.
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- MODERACIÓN -->
+    <div class="card alerts-card">
+
+      <div class="alerts-top">
+
+        <div>
+          <h2>Alertas de moderación</h2>
+
+          <div class="card-subtitle">
+            Avisos generados automáticamente
+          </div>
+        </div>
+
+        <div id="alertCount" class="alert-count">
+          0
+        </div>
+
+      </div>
+
+      <div id="alertsList" class="alerts-list">
+
+        <div class="empty">
+          Cargando alertas...
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<div id="status" class="status hidden"></div>
+
+
+<script>
+
+const KN_AUTH_API =
+  "https://visitor-built-cells-disable.trycloudflare.com";
+
+/* PON AQUÍ LA URL REAL DE MODERATION */
+const MODERATION_API =
+  "https://TU-MODERATION-URL.trycloudflare.com";
+
+const TOKEN_KEY =
+  "knfoundation_token";
+
+const ADMIN_USERNAME =
+  "education.smart";
+
+const LOCK_RADIUS =
+  100;
+
+let lockRequestInProgress =
+  false;
+
+
+/* ELEMENTOS */
+
+const loginScreen =
+  document.getElementById("loginScreen");
+
+const appScreen =
+  document.getElementById("app");
+
+const usernameInput =
+  document.getElementById("username");
+
+const passwordInput =
+  document.getElementById("password");
+
+const loginBtn =
+  document.getElementById("loginBtn");
+
+const loginError =
+  document.getElementById("loginError");
+
+const accountName =
+  document.getElementById("accountName");
+
+const logoutBtn =
+  document.getElementById("logoutBtn");
+
+const lockSwitch =
+  document.getElementById("lockSwitch");
+
+const lockState =
+  document.getElementById("lockState");
+
+const alertsList =
+  document.getElementById("alertsList");
+
+const alertCount =
+  document.getElementById("alertCount");
+
+const statusBox =
+  document.getElementById("status");
+
+
+/* AUTH */
+
+function getToken(){
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+function authHeaders(){
+
+  const token =
+    getToken();
+
+  if(!token){
+    return {};
+  }
+
+  return {
+    "Authorization":
+      `Bearer ${token}`
+  };
+}
+
+
+/* STATUS */
+
+function showStatus(message){
+
+  statusBox.textContent =
+    message;
+
+  statusBox.classList.remove(
+    "hidden"
+  );
+
+  clearTimeout(
+    showStatus.timer
+  );
+
+  showStatus.timer =
+    setTimeout(() => {
+
+      statusBox.classList.add(
+        "hidden"
+      );
+
+    },4000);
+}
+
+
+/* LOGIN */
+
+async function login(){
+
+  loginError.textContent =
+    "";
+
+  const username =
+    usernameInput.value.trim();
+
+  const password =
+    passwordInput.value;
+
+  if(!username || !password){
+
+    loginError.textContent =
+      "Completa todos los campos.";
+
+    return;
+  }
+
+  loginBtn.disabled =
+    true;
+
+  loginBtn.textContent =
+    "Entrando...";
+
+  try{
+
+    const response =
+      await fetch(
+        `${KN_AUTH_API}/api/login`,
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          body:JSON.stringify({
+            username,
+            password
+          })
+        }
+      );
+
+    const data =
+      await response
+        .json()
+        .catch(() => ({}));
+
+    if(!response.ok){
+
+      throw new Error(
+        data.detail ||
+        data.message ||
+        "No se pudo iniciar sesión."
+      );
+    }
+
+    const token =
+      data.token ||
+      data.access_token ||
+      data.session_token;
+
+    if(!token){
+
+      throw new Error(
+        "La API no devolvió un token."
+      );
+    }
+
+    localStorage.setItem(
+      TOKEN_KEY,
+      token
+    );
+
+    await initializePanel();
+
+  }catch(error){
+
+    loginError.textContent =
+      error.message ||
+      "Error al iniciar sesión.";
+
+  }finally{
+
+    loginBtn.disabled =
+      false;
+
+    loginBtn.textContent =
+      "Entrar";
+  }
+}
+
+
+/* ME */
+
+async function getMe(){
+
+  const response =
+    await fetch(
+      `${KN_AUTH_API}/api/me`,
+      {
+        headers:authHeaders(),
+        cache:"no-store"
+      }
+    );
+
+  if(!response.ok){
+
+    throw new Error(
+      "Sesión inválida."
+    );
+  }
+
+  return await response.json();
+}
+
+
+/* INICIALIZAR */
+
+async function initializePanel(){
+
+  const me =
+    await getMe();
+
+  const username =
+    me.username ||
+    me.user?.username;
+
+  if(username !== ADMIN_USERNAME){
+
+    localStorage.removeItem(
+      TOKEN_KEY
+    );
+
+    throw new Error(
+      "Esta cuenta no tiene acceso al Panel Admin."
+    );
+  }
+
+  accountName.textContent =
+    `@${username}`;
+
+  loginScreen.classList.add(
+    "hidden"
+  );
+
+  appScreen.classList.remove(
+    "hidden"
+  );
+
+  await loadLockState();
+  await loadModerationAlerts();
+}
+
+
+/* LOGOUT */
+
+logoutBtn.addEventListener(
+  "click",
+  async () => {
+
+    try{
+
+      await fetch(
+        `${KN_AUTH_API}/api/logout`,
+        {
+          method:"POST",
+          headers:authHeaders()
+        }
+      );
+
+    }catch(_){}
+
+    localStorage.removeItem(
+      TOKEN_KEY
+    );
+
+    appScreen.classList.add(
+      "hidden"
+    );
+
+    loginScreen.classList.remove(
+      "hidden"
+    );
+
+    usernameInput.value =
+      "";
+
+    passwordInput.value =
+      "";
+
+  }
+);
+
+
+/* BLOQUEO */
+
+async function loadLockState(){
+
+  try{
+
+    const response =
+      await fetch(
+        `${KN_AUTH_API}/api/ecosystem-lock`,
+        {
+          headers:authHeaders(),
+          cache:"no-store"
+        }
+      );
+
+    if(!response.ok){
+
+      throw new Error(
+        "No se pudo obtener el estado."
+      );
+    }
+
+    const data =
+      await response.json();
+
+    const enabled =
+      data.enabled === true ||
+      data.locked === true;
+
+    lockSwitch.checked =
+      enabled;
+
+    updateLockText(
+      enabled
+    );
+
+  }catch(error){
+
+    lockState.textContent =
+      "No se pudo consultar el estado.";
+
+    showStatus(
+      error.message
+    );
+  }
+}
+
+
+function updateLockText(enabled){
+
+  lockState.textContent =
+    enabled
+      ? "Activo · bloqueo habilitado"
+      : "Inactivo · servicios disponibles";
+}
+
+
+lockSwitch.addEventListener(
+  "change",
+  async () => {
+
+    if(lockRequestInProgress){
+      return;
+    }
+
+    if(lockSwitch.checked){
+
+      await enableLock();
+
+    }else{
+
+      await disableLock();
+
+    }
+  }
+);
+
+
+function getCurrentPosition(){
+
+  return new Promise(
+    (resolve,reject) => {
+
+      if(!navigator.geolocation){
+
+        reject(
+          new Error(
+            "Tu navegador no admite geolocalización."
+          )
+        );
+
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        resolve,
+        reject,
+        {
+          enableHighAccuracy:true,
+          timeout:15000,
+          maximumAge:0
+        }
+      );
+    }
+  );
+}
+
+
+async function enableLock(){
+
+  lockRequestInProgress =
+    true;
+
+  lockSwitch.disabled =
+    true;
+
+  try{
+
+    showStatus(
+      "Solicitando permiso de ubicación..."
+    );
+
+    const position =
+      await getCurrentPosition();
+
+    const latitude =
+      position.coords.latitude;
+
+    const longitude =
+      position.coords.longitude;
+
+    const response =
+      await fetch(
+        `${KN_AUTH_API}/api/ecosystem-lock`,
+        {
+          method:"POST",
+          headers:{
+            ...authHeaders(),
+            "Content-Type":
+              "application/json"
+          },
+          body:JSON.stringify({
+            enabled:true,
+            latitude,
+            longitude,
+            radius_meters:
+              LOCK_RADIUS
+          })
+        }
+      );
+
+    const data =
+      await response
+        .json()
+        .catch(() => ({}));
+
+    if(!response.ok){
+
+      throw new Error(
+        data.detail ||
+        data.message ||
+        "No se pudo activar el bloqueo."
+      );
+    }
+
+    lockSwitch.checked =
+      true;
+
+    updateLockText(
+      true
+    );
+
+    showStatus(
+      "Bloqueo activado correctamente."
+    );
+
+  }catch(error){
+
+    lockSwitch.checked =
+      false;
+
+    updateLockText(
+      false
+    );
+
+    showStatus(
+      error.message ||
+      "No se pudo activar el bloqueo."
+    );
+
+  }finally{
+
+    lockRequestInProgress =
+      false;
+
+    lockSwitch.disabled =
+      false;
+  }
+}
+
+
+async function disableLock(){
+
+  lockRequestInProgress =
+    true;
+
+  lockSwitch.disabled =
+    true;
+
+  try{
+
+    const response =
+      await fetch(
+        `${KN_AUTH_API}/api/ecosystem-lock`,
+        {
+          method:"POST",
+          headers:{
+            ...authHeaders(),
+            "Content-Type":
+              "application/json"
+          },
+          body:JSON.stringify({
+            enabled:false,
+            latitude:null,
+            longitude:null,
+            radius_meters:
+              LOCK_RADIUS
+          })
+        }
+      );
+
+    const data =
+      await response
+        .json()
+        .catch(() => ({}));
+
+    if(!response.ok){
+
+      throw new Error(
+        data.detail ||
+        data.message ||
+        "No se pudo desactivar el bloqueo."
+      );
+    }
+
+    lockSwitch.checked =
+      false;
+
+    updateLockText(
+      false
+    );
+
+    showStatus(
+      "Bloqueo desactivado."
+    );
+
+  }catch(error){
+
+    lockSwitch.checked =
+      true;
+
+    updateLockText(
+      true
+    );
+
+    showStatus(
+      error.message ||
+      "No se pudo desactivar el bloqueo."
+    );
+
+  }finally{
+
+    lockRequestInProgress =
+      false;
+
+    lockSwitch.disabled =
+      false;
+  }
+}
+
+
+/* MODERACIÓN */
+
+async function loadModerationAlerts(){
+
+  try{
+
+    const response =
+      await fetch(
+        `${MODERATION_API}/api/moderation/alerts`,
+        {
+          headers:authHeaders(),
+          cache:"no-store"
+        }
+      );
+
+    if(!response.ok){
+
+      if(response.status === 401){
+
+        throw new Error(
+          "No tienes autorización para ver las alertas."
+        );
+      }
+
+      throw new Error(
+        `Moderation API respondió ${response.status}`
+      );
+    }
+
+    const data =
+      await response.json();
+
+    const alerts =
+      Array.isArray(data)
+        ? data
+        : Array.isArray(data.alerts)
+          ? data.alerts
+          : [];
+
+    renderAlerts(
+      alerts
+    );
+
+  }catch(error){
+
+    alertsList.innerHTML = `
+      <div class="empty">
+        No se pudieron cargar las alertas.
+        <br><br>
+        ${escapeHtml(error.message)}
+      </div>
+    `;
+
+    alertCount.textContent =
+      "0";
+  }
+}
+
+
+/* ESCAPE */
+
+function escapeHtml(value){
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+  div.textContent =
+    value ?? "";
+
+  return div.innerHTML;
+}
+
+
+/* RENDER */
+
+function renderAlerts(alerts){
+
+  alertCount.textContent =
+    alerts.length;
+
+  if(!alerts.length){
+
+    alertsList.innerHTML = `
+      <div class="empty">
+        No hay alertas de moderación.
+      </div>
+    `;
+
+    return;
+  }
+
+  alertsList.innerHTML =
+    "";
+
+  for(const alert of alerts){
+
+    const severity =
+      String(
+        alert.severity ||
+        "medium"
+      ).toLowerCase();
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+    card.className =
+      `alert-card ${severity}`;
+
+    card.innerHTML = `
+      <div class="alert-header">
+
+        <div class="alert-type">
+          ⚠ Contenido detectado
+        </div>
+
+        <div class="severity">
+          ${escapeHtml(severity)}
+        </div>
+
+      </div>
+
+      <div class="alert-users">
+        @${escapeHtml(
+          alert.sender ||
+          "desconocido"
+        )}
+        →
+        @${escapeHtml(
+          alert.receiver ||
+          "desconocido"
+        )}
+      </div>
+
+      <div class="alert-message"></div>
+
+      <div class="alert-reason">
+        <b>Categoría:</b>
+        ${escapeHtml(
+          alert.category ||
+          "other"
+        )}
+
+        <br><br>
+
+        <b>Motivo:</b>
+        ${escapeHtml(
+          alert.reason ||
+          "Contenido detectado automáticamente."
+        )}
+      </div>
+
+      <div class="alert-meta">
+        Modelo:
+        ${escapeHtml(
+          alert.model ||
+          "Gemini"
+        )}
+
+        ${
+          alert.created_at
+            ? ` · ${escapeHtml(alert.created_at)}`
+            : ""
+        }
+      </div>
+    `;
+
+    card.querySelector(
+      ".alert-message"
+    ).textContent =
+      `"${alert.message || "(sin texto)"}"`;
+
+    alertsList.appendChild(
+      card
+    );
+  }
+}
+
+
+/* REFRESH */
+
+setInterval(
+  () => {
+
+    if(
+      !appScreen.classList.contains(
+        "hidden"
+      ) &&
+      getToken()
+    ){
+
+      loadModerationAlerts();
+      loadLockState();
+    }
+
+  },
+  5000
+);
+
+
+/* LOGIN */
+
+loginBtn.addEventListener(
+  "click",
+  login
+);
+
+passwordInput.addEventListener(
+  "keydown",
+  event => {
+
+    if(event.key === "Enter"){
+      login();
+    }
+
+  }
+);
+
+
+/* SESIÓN EXISTENTE */
+
+(async function(){
+
+  const token =
+    getToken();
+
+  if(!token){
+    return;
+  }
+
+  try{
+
+    await initializePanel();
+
+  }catch(_){
+
+    localStorage.removeItem(
+      TOKEN_KEY
+    );
+
+    appScreen.classList.add(
+      "hidden"
+    );
+
+    loginScreen.classList.remove(
+      "hidden"
+    );
+  }
+
+})();
+</script>
+
+</body>
+</html>
