@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart-Educational Admin</title>
+    <style>
+        :root {
+            --bg-base: #121212;
+            --bg-panel: #1a1a1a;
+            --bg-card: #2c2c2c;
+            --border: #333333;
+            --text-main: #ffffff;
+            --text-sec: #9e9e9e;
+            --cyan: #00bcd4;
+            --cyan-glow: rgba(0, 240, 255, 0.4);
+            --danger: #ff5252;
+            --radius: 6px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Bar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .brand {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        button.btn {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        button.btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        /* Sections */
+        .section-title {
+            font-weight: normal;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-2 { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 24px; 
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            color: var(--text-sec);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        /* Switch Toggle UI */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 54px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg-base);
+            border: 1px solid var(--border);
+            transition: .3s;
+            border-radius: 28px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-sec);
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan-glow);
+            border-color: var(--cyan);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+            background-color: #000;
+        }
+
+        .status-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sys-location {
+            font-size: 0.9rem;
+            color: var(--text-sec);
+            background-color: var(--bg-base);
+            padding: 10px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 15px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th { color: var(--text-sec); font-weight: normal; }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        .badge.high, .badge.critical { background: rgba(255, 82, 82, 0.2); color: var(--danger); }
+        .badge.medium { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .badge.low { background: rgba(0, 188, 212, 0.2); color: var(--cyan); }
+
+        .stat-value { font-size: 2.2rem; }
+        .text-cyan { color: var(--cyan); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="brand">Smart-Admin Panel</div>
+        </header>
+
+        <!-- Section 1: ECOSYSTEM LOCK -->
+        <h2 class="section-title">Bloqueo del Ecosistema</h2>
+        
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">Estado del Bloqueo</div>
+                <div class="switch-container">
+                    <span id="lockStatusText" class="status-text">Cargando...</span>
+                    <label class="switch">
+                        <input type="checkbox" id="lockToggle" onchange="toggleLock(this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Configuración de Ubicación</div>
+                <div class="sys-location">
+                    <span>Sistema GPS: </span>
+                    <strong id="sysLocDisplay" style="color: var(--text-main);">Obteniendo permiso...</strong>
+                </div>
+                <button class="btn" onclick="requestSystemLocation()">Recargar GPS del Sistema</button>
+            </div>
+        </div>
+
+        <!-- Section 2: MODERACIÓN IA -->
+        <div class="section-title">
+            <span>Moderación IA</span>
+            <button class="btn" onclick="loadModeration()">Actualizar Datos</button>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">Mensajes Escaneados</div>
+                <div class="stat-value text-cyan" id="statScanned">0</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Alertas Detectadas</div>
+                <div class="stat-value text-cyan" id="statAlerts">0</div>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 0; overflow-x: auto; margin-bottom: 40px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Emisor</th>
+                        <th>Categoría</th>
+                        <th>Nivel</th>
+                        <th>Razón (IA)</th>
+                        <th>Mensaje</th>
+                    </tr>
+                </thead>
+                <tbody id="alertsTableBody">
+                    <tr><td colspan="6" style="text-align: center; color: var(--text-sec);">Cargando alertas...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // URL de la API fijada en el código
+        const API_BASE = 'https://candles-rocks-paper-kiddo.trycloudflare.com';
+        
+        // Variables para almacenar la ubicación temporalmente
+        let currentLat = null;
+        let currentLon = null;
+
+        function getToken() {
+            return localStorage.getItem('knfoundation_token');
+        }
+
+        function getHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            };
+        }
+
+        // Permiso de Geolocalización del Sistema
+        function requestSystemLocation() {
+            const display = document.getElementById('sysLocDisplay');
+            if (navigator.geolocation) {
+                display.innerText = "Solicitando permiso...";
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        currentLat = pos.coords.latitude;
+                        currentLon = pos.coords.longitude;
+                        display.innerText = `${currentLat.toFixed(6)}, ${currentLon.toFixed(6)}`;
+                    },
+                    (err) => {
+                        display.innerText = "Permiso denegado / No disponible";
+                        currentLat = null;
+                        currentLon = null;
+                    }
+                );
+            } else {
+                display.innerText = "Geolocalización no soportada";
+            }
+        }
+
+        // Lógica: Ecosystem Lock
+        async function loadLockStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/api/ecosystem-lock`);
+                const data = await res.json();
+                
+                const isEnabled = data.enabled;
+                const toggle = document.getElementById('lockToggle');
+                const text = document.getElementById('lockStatusText');
+
+                toggle.checked = isEnabled;
+
+                if (isEnabled) {
+                    text.innerText = "ACTIVO";
+                    text.style.color = "var(--danger)";
+                    text.style.textShadow = "0 0 10px rgba(255,82,82,0.4)";
+                } else {
+                    text.innerText = "INACTIVO";
+                    text.style.color = "var(--cyan)";
+                    text.style.textShadow = "none";
+                }
+            } catch (err) {
+                console.error("Error al cargar el estado del bloqueo", err);
+            }
+        }
+
+        async function toggleLock(checked) {
+            if (checked && (currentLat === null || currentLon === null)) {
+                alert("Para bloquear, primero permita el acceso al GPS del sistema.");
+                document.getElementById('lockToggle').checked = false;
+                return;
+            }
+
+            const payload = { enabled: checked };
+            if (checked) {
+                payload.latitude = currentLat;
+                payload.longitude = currentLon;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/ecosystem-lock`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify(payload)
+                });
+                
+                if (res.ok) {
+                    loadLockStatus();
+                } else {
+                    const err = await res.json();
+                    alert("Error: " + (err.detail || "No autorizado"));
+                    document.getElementById('lockToggle').checked = !checked;
+                }
+            } catch (err) {
+                alert("Error de conexión con el backend");
+                document.getElementById('lockToggle').checked = !checked;
+            }
+        }
+
+        // Lógica: Moderación IA
+        async function loadModeration() {
+            try {
+                const statRes = await fetch(`${API_BASE}/api/moderation/status`, { headers: getHeaders() });
+                if (statRes.ok) {
+                    const stats = await statRes.json();
+                    document.getElementById('statScanned').innerText = stats.scanned;
+                    document.getElementById('statAlerts').innerText = stats.alerts;
+                }
+
+                const alertRes = await fetch(`${API_BASE}/api/moderation/alerts?limit=20`, { headers: getHeaders() });
+                if (alertRes.ok) {
+                    const data = await alertRes.json();
+                    renderTable(data.alerts);
+                } else if (alertRes.status === 403) {
+                    document.getElementById('alertsTableBody').innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--danger);">Permiso denegado (Requiere cuenta de Administrador)</td></tr>`;
+                }
+            } catch (err) {
+                console.error("Error cargando moderación", err);
+            }
+        }
+
+        function renderTable(alerts) {
+            const tbody = document.getElementById('alertsTableBody');
+            tbody.innerHTML = '';
+            
+            if (!alerts || alerts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-sec);">No hay alertas recientes</td></tr>`;
+                return;
+            }
+
+            alerts.forEach(a => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--text-sec)">#${a.message_id}</td>
+                    <td>@${a.sender}</td>
+                    <td>${a.category}</td>
+                    <td><span class="badge ${a.severity.toLowerCase()}">${a.severity}</span></td>
+                    <td style="font-size:0.85em; color:var(--text-sec); max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${a.reason}</td>
+                    <td>${a.message}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function init() {
+            requestSystemLocation();
+            loadLockStatus();
+            loadModeration();
+        }
+
+        init();
+    </script>
+</body>
+</html>
